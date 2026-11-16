@@ -1,0 +1,464 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 36 33% 95%;
+    --foreground: 30 10% 15%;
+
+    --card: 36 33% 98%;
+    --card-foreground: 30 10% 15%;
+
+    --popover: 36 33% 98%;
+    --popover-foreground: 30 10% 15%;
+
+    --primary: 34 38% 63%;
+    --primary-foreground: 36 33% 98%;
+
+    --secondary: 100 15% 38%;
+    --secondary-foreground: 36 33% 98%;
+
+    --muted: 36 20% 90%;
+    --muted-foreground: 30 10% 45%;
+
+    --accent: 16 55% 54%;
+    --accent-foreground: 36 33% 98%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 34 25% 85%;
+    --input: 34 25% 85%;
+    --ring: 34 38% 63%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 36 33% 96%;
+    --sidebar-foreground: 30 10% 25%;
+    --sidebar-primary: 34 38% 63%;
+    --sidebar-primary-foreground: 36 33% 98%;
+    --sidebar-accent: 36 20% 92%;
+    --sidebar-accent-foreground: 30 10% 25%;
+    --sidebar-border: 34 25% 88%;
+    --sidebar-ring: 34 38% 63%;
+
+    --font-heading: 'Cormorant Garamond', serif;
+    --font-body: 'Outfit', sans-serif;
+
+    --shadow-card: 0 4px 24px -4px hsl(34 38% 63% / 0.12);
+    --shadow-elevated: 0 12px 40px -8px hsl(34 38% 63% / 0.2);
+  }
+
+  /* Thème sombre : appliqué par la classe .dark sur <html>, uniquement pendant
+     que le tableau de bord est monté. Les portails Radix (modales, toasts) sont
+     enfants de <body> et héritent donc de ce bloc. */
+  .dark {
+    color-scheme: dark;
+
+    --background: 152 14% 8%;
+    --foreground: 96 14% 91%;
+
+    --card: 150 13% 12%;
+    --card-foreground: 96 14% 91%;
+
+    --popover: 150 13% 12%;
+    --popover-foreground: 96 14% 91%;
+
+    --primary: 34 40% 66%;
+    --primary-foreground: 152 18% 10%;
+
+    --secondary: 100 14% 34%;
+    --secondary-foreground: 96 14% 91%;
+
+    --muted: 150 10% 18%;
+    --muted-foreground: 110 8% 64%;
+
+    --accent: 16 48% 55%;
+    --accent-foreground: 96 14% 94%;
+
+    --destructive: 4 58% 55%;
+    --destructive-foreground: 152 18% 10%;
+
+    --border: 150 10% 23%;
+    --input: 150 10% 25%;
+    --ring: 34 40% 66%;
+
+    --sidebar-background: 152 14% 10%;
+    --sidebar-foreground: 96 14% 91%;
+    --sidebar-primary: 34 40% 66%;
+    --sidebar-primary-foreground: 152 18% 10%;
+    --sidebar-accent: 150 11% 17%;
+    --sidebar-accent-foreground: 96 14% 91%;
+    --sidebar-border: 150 10% 20%;
+    --sidebar-ring: 34 40% 66%;
+
+    --shadow-card: 0 4px 24px -4px hsl(0 0% 0% / 0.5);
+    --shadow-elevated: 0 12px 40px -8px hsl(0 0% 0% / 0.6);
+  }
+
+  .public-site {
+    color-scheme: light;
+    --background: 0 0% 100%;
+    --foreground: 150 8% 14%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 150 8% 14%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 150 8% 14%;
+
+    --primary: 148 31% 26%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 40 22% 96%;
+    --secondary-foreground: 150 8% 14%;
+    --muted: 40 20% 96%;
+    --muted-foreground: 150 5% 43%;
+    --accent: 35 32% 75%;
+    --accent-foreground: 150 8% 14%;
+
+    --border: 140 9% 88%;
+    --input: 140 9% 84%;
+    --ring: 148 31% 26%;
+    --radius: 0.35rem;
+    --shadow-card: 0 8px 24px -22px hsl(150 20% 18% / 0.3);
+    --shadow-elevated: 0 14px 32px -24px hsl(150 20% 18% / 0.35);
+
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+  }
+}
+
+@layer components {
+  .hero-viewport {
+    min-height: 100vh;
+    min-height: 100svh;
+    min-height: 100dvh;
+  }
+
+  /* Le contenu du Hero doit tenir dans la hauteur visible : les espacements
+     suivent le viewport et se compactent sur les écrans courts (mobile paysage). */
+  .hero-content {
+    padding-top: max(7rem, 15dvh);
+    padding-bottom: max(6rem, 13dvh);
+  }
+
+  @media (max-height: 620px) {
+    .hero-content {
+      padding-top: 4.75rem;
+      padding-bottom: 3.5rem;
+    }
+  }
+
+  .section-padding {
+    @apply px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24;
+  }
+
+  .container-custom {
+    @apply max-w-7xl mx-auto;
+  }
+
+  .public-site .section-padding {
+    padding-block: clamp(3.75rem, 8vw, 7rem);
+    padding-inline: clamp(1rem, 4vw, 3rem);
+  }
+
+  .public-site section[id]:not(#accueil) {
+    scroll-margin-top: 5.5rem;
+  }
+
+  .public-site button,
+  .public-site a {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .public-site :where(a, button, input, select, textarea):focus-visible,
+  .public-document :where(a, button, input, select, textarea):focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .public-site *,
+    .public-site *::before,
+    .public-site *::after,
+    .public-document *,
+    .public-document *::before,
+    .public-document *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------
+   Notifications flottantes (sonner). La feuille de la librairie est
+   injectée au runtime, donc après notre CSS en production : chaque règle
+   est volontairement plus spécifique que celle qu'elle doit couvrir.
+------------------------------------------------------------------- */
+.kdp-toaster[data-sonner-toaster][data-theme='light'] {
+  --normal-bg: #ffffff;
+  --normal-border: #dedbd3;
+  --normal-text: #2f342f;
+
+  --success-bg: #eef4ec;
+  --success-border: #cadcc3;
+  --success-text: #3c5c42;
+
+  --info-bg: #f7f6f2;
+  --info-border: #dedbd3;
+  --info-text: #2f342f;
+
+  --warning-bg: #fbf3e6;
+  --warning-border: #ecdcc2;
+  --warning-text: #86603a;
+
+  --error-bg: #fdf0ea;
+  --error-border: #f3cdbd;
+  --error-text: #9d4a2c;
+}
+
+.kdp-toaster[data-sonner-toaster][data-theme='dark'] {
+  --normal-bg: #1b221c;
+  --normal-border: #2b342c;
+  --normal-text: #e7ebe3;
+
+  --success-bg: #17241b;
+  --success-border: #33513c;
+  --success-text: #aecfab;
+
+  --info-bg: #1b221c;
+  --info-border: #2b342c;
+  --info-text: #e7ebe3;
+
+  --warning-bg: #241d13;
+  --warning-border: #4d3d22;
+  --warning-text: #e0bd86;
+
+  --error-bg: #2a1814;
+  --error-border: #5b3126;
+  --error-text: #eaa88f;
+}
+
+.kdp-toaster {
+  --border-radius: 12px;
+}
+
+.kdp-toaster .kdp-toast {
+  padding: 14px 46px 14px 16px;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+  line-height: 1.45;
+  font-family: var(--font-body);
+  box-shadow: 0 10px 30px -12px hsl(0 0% 0% / 0.28);
+}
+
+.kdp-toaster .kdp-toast [data-icon] {
+  margin-left: 0;
+  margin-right: 2px;
+}
+
+.kdp-toaster .kdp-toast [data-content] {
+  gap: 3px;
+}
+
+.kdp-toast-title {
+  font-weight: 600;
+}
+
+.kdp-toast-description {
+  font-size: 12.5px;
+  line-height: 1.4;
+  opacity: 0.78;
+  overflow-wrap: anywhere;
+}
+
+/* La croix est à droite, centrée verticalement, avec une zone de touche de 24 px. */
+.kdp-toaster .kdp-toast[data-sonner-toast] button.kdp-toast-close {
+  left: auto;
+  right: 12px;
+  top: 50%;
+  height: 24px;
+  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  color: currentColor;
+  background: transparent;
+  border: 1px solid currentColor;
+  opacity: 0.55;
+  transform: translateY(-50%);
+  transition: opacity 160ms ease, background 160ms ease;
+}
+
+.kdp-toaster .kdp-toast[data-sonner-toast] button.kdp-toast-close:hover {
+  opacity: 1;
+  background: hsl(0 0% 50% / 0.12);
+}
+
+.kdp-toaster .kdp-toast[data-sonner-toast] button.kdp-toast-close:focus-visible {
+  opacity: 1;
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+@media (max-width: 600px) {
+  .kdp-toaster .kdp-toast {
+    font-size: 13px;
+    padding: 12px 44px 12px 14px;
+  }
+
+  .kdp-toaster .kdp-toast[data-sonner-toast] button.kdp-toast-close {
+    right: 10px;
+  }
+}
+
+@layer utilities {
+  .text-gradient-primary {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--accent)));
+  }
+}
+
+[data-modal-content] {
+  border-radius: 0;
+  overflow: hidden;
+}
+
+[data-modal-scroll] {
+  scrollbar-color: hsl(var(--muted-foreground) / 0.45) transparent;
+  scrollbar-width: thin;
+}
+
+[data-modal-scroll]::-webkit-scrollbar {
+  width: 6px;
+}
+
+[data-modal-scroll]::-webkit-scrollbar-track {
+  margin-block: 2.75rem 0.5rem;
+  background: transparent;
+}
+
+[data-modal-scroll]::-webkit-scrollbar-thumb {
+  border: 1px solid transparent;
+  background-clip: content-box;
+  background-color: hsl(var(--muted-foreground) / 0.45);
+}
+
+[data-modal-scroll]::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--foreground) / 0.55);
+}
+
+[data-modal-content] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]), select, textarea) {
+  min-height: 2.75rem;
+  max-width: 100%;
+  border: 1px solid hsl(var(--input));
+  border-radius: 0;
+  background-color: hsl(var(--card));
+  color: hsl(var(--foreground));
+  padding: 0.625rem 0.75rem;
+  transition: border-color 150ms ease, box-shadow 150ms ease;
+}
+
+[data-modal-content] textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+
+[data-modal-content] select {
+  padding-right: 2.25rem;
+}
+
+[data-modal-content] :is(input, select, textarea):focus-visible {
+  border-color: hsl(var(--ring));
+  outline: none;
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.18);
+}
+
+[data-modal-content] :is(input, select, textarea)[aria-invalid="true"],
+[data-modal-content] :is(input, select, textarea):user-invalid {
+  border-color: hsl(var(--destructive));
+}
+
+[data-modal-content] :is(input, select, textarea):disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+[data-modal-content] input[type="checkbox"],
+[data-modal-content] input[type="radio"] {
+  accent-color: #315a3d;
+}
+
+[data-modal-content] button:not([data-modal-close]),
+[data-modal-actions] :is(button, a, [role="button"]) {
+  min-height: 2.75rem;
+  border-radius: 0;
+}
+
+[data-modal-content] button[type="submit"] {
+  background-color: #293b32;
+  color: #fff;
+}
+
+[data-modal-content] button[type="submit"]:hover:not(:disabled) {
+  background-color: #354b3f;
+}
+
+[data-modal-actions] {
+  align-items: stretch;
+}
+
+@media (min-width: 640px) {
+  [data-modal-actions] {
+    align-items: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-modal-content],
+  [data-modal-content] *,
+  [data-modal-actions],
+  [data-modal-actions] * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 639px) {
+  [data-modal-content] {
+    width: calc(100vw - 2rem) !important;
+    max-width: calc(100vw - 2rem) !important;
+    max-height: calc(100dvh - 2rem) !important;
+  }
+}
+
+@media (max-width: 1024px) {
+  [data-alert-dialog] {
+    width: 70vw !important;
+    max-width: 70vw !important;
+  }
+}
