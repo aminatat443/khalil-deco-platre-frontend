@@ -1,1 +1,3 @@
+/api/* https://khalil-deco-platre.onrender.com/api/:splat 200
+/media/* https://khalil-deco-platre.onrender.com/media/:splat 200
 /* /index.html 200
