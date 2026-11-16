@@ -30,7 +30,7 @@ export default function HelpWidget() {
     setOpen(false);
   }
 
-  return <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+2.75rem)] right-3 z-50 flex flex-col items-end gap-3 sm:right-6">
+  return <div className="fixed bottom-[calc(env(safe-area-inset-bottom)+3.25rem)] right-3 z-50 flex flex-col items-end gap-3 sm:right-6">
     {open && <section aria-label="Écrire sur WhatsApp" className="flex max-h-[calc(100dvh-6rem-env(safe-area-inset-bottom))] w-[min(92vw,360px)] flex-col overflow-y-auto overscroll-contain border border-[#e4e9e3] bg-white shadow-[0_14px_38px_-24px_rgba(25,35,28,0.5)]">
       <header className="flex items-center justify-between gap-3 bg-[#1f7a4d] px-4 py-3.5 text-white">
         <div className="flex items-center gap-2.5"><span className="grid size-9 place-items-center bg-white/15"><SiWhatsapp size={19} /></span><div><p className="text-sm font-semibold">WhatsApp</p><p className="mt-0.5 text-[11px] text-white/75">{company?.name || "Khalil Déco Plâtre"}</p></div></div>
