@@ -368,6 +368,7 @@ const ROLE_LABELS: Record<string, string> = {
 function Admin() {
   const [user, setUser] = useState<User | null>(null);
   const [checking, setChecking] = useState(true);
+  const [serverWaking, setServerWaking] = useState(false);
   const [tab, setTab] = useState<Tab>("overview");
   const [quoteStatusFilter, setQuoteStatusFilter] = useState("");
   const [invoiceStatusFilter, setInvoiceStatusFilter] = useState("");
@@ -520,6 +521,12 @@ function Admin() {
   };
 
   useEffect(() => {
+    if (!checking) return;
+    const timer = window.setTimeout(() => setServerWaking(true), 5000);
+    return () => window.clearTimeout(timer);
+  }, [checking]);
+
+  useEffect(() => {
     api<{ user: User }>("/auth/session")
       .then((result) => setUser(result.user))
       .catch(() => setUser(null))
@@ -583,8 +590,18 @@ function Admin() {
 
   if (checking)
     return (
-      <div className="grid min-h-screen place-items-center bg-[#f5f4f0] dark:bg-[#121713] text-sm text-[#73766f] dark:text-[#aab3a8]">
-        Vérification de la session…
+      <div role="status" aria-live="polite" className="grid min-h-screen place-items-center bg-[#f5f4f0] px-6 text-center text-sm text-[#73766f] dark:bg-[#121713] dark:text-[#aab3a8]">
+        <div className="flex max-w-md flex-col items-center">
+          <Loader2 className="mb-4 h-6 w-6 animate-spin text-[#a97850] dark:text-[#dcb487]" aria-hidden="true" />
+          <p className="font-medium text-[#29352f] dark:text-[#e9ece6]">
+            {serverWaking ? "Le serveur met un peu de temps à répondre…" : "Vérification de la session…"}
+          </p>
+          <p className="mt-2 leading-6">
+            {serverWaking
+              ? "Après une période sans activité, le serveur peut avoir besoin de quelques secondes pour redémarrer. La vérification continue automatiquement."
+              : "Connexion sécurisée à votre espace d’administration."}
+          </p>
+        </div>
       </div>
     );
   if (!user)
