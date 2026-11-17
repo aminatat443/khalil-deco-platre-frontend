@@ -365,10 +365,16 @@ const ROLE_LABELS: Record<string, string> = {
   viewer: "Observateur",
 };
 
+const adminLoadingMessages = [
+  "On met tout en place pour vous…",
+  "Vos outils seront prêts dans un instant…",
+  "Presque prêt, encore un petit moment…",
+];
+
 function Admin() {
   const [user, setUser] = useState<User | null>(null);
   const [checking, setChecking] = useState(true);
-  const [serverWaking, setServerWaking] = useState(false);
+  const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
   const [tab, setTab] = useState<Tab>("overview");
   const [quoteStatusFilter, setQuoteStatusFilter] = useState("");
   const [invoiceStatusFilter, setInvoiceStatusFilter] = useState("");
@@ -522,8 +528,10 @@ function Admin() {
 
   useEffect(() => {
     if (!checking) return;
-    const timer = window.setTimeout(() => setServerWaking(true), 5000);
-    return () => window.clearTimeout(timer);
+    const timer = window.setInterval(() => {
+      setLoadingMessageIndex((index) => (index + 1) % adminLoadingMessages.length);
+    }, 3500);
+    return () => window.clearInterval(timer);
   }, [checking]);
 
   useEffect(() => {
@@ -590,16 +598,17 @@ function Admin() {
 
   if (checking)
     return (
-      <div role="status" aria-live="polite" className="grid min-h-screen place-items-center bg-[#f5f4f0] px-6 text-center text-sm text-[#73766f] dark:bg-[#121713] dark:text-[#aab3a8]">
-        <div className="flex max-w-md flex-col items-center">
-          <Loader2 className="mb-4 h-6 w-6 animate-spin text-[#a97850] dark:text-[#dcb487]" aria-hidden="true" />
-          <p className="font-medium text-[#29352f] dark:text-[#e9ece6]">
-            {serverWaking ? "Le serveur met un peu de temps à répondre…" : "Vérification de la session…"}
-          </p>
-          <p className="mt-2 leading-6">
-            {serverWaking
-              ? "Après une période sans activité, le serveur peut avoir besoin de quelques secondes pour redémarrer. La vérification continue automatiquement."
-              : "Connexion sécurisée à votre espace d’administration."}
+      <div role="status" aria-live="polite" className="grid min-h-screen place-items-center bg-[#f5f4f0] px-6 text-center dark:bg-[#121713]">
+        <div className="flex flex-col items-center">
+          <div className="relative mb-6 h-16 w-16" aria-hidden="true">
+            <div className="absolute inset-0 animate-spin rounded-full border-[3px] border-[#e5e1d8] border-t-[#a97850] dark:border-[#303a32] dark:border-t-[#dcb487]" />
+            <div className="absolute inset-[9px] grid place-items-center rounded-full bg-white text-[#a97850] shadow-sm dark:bg-[#1b221c] dark:text-[#dcb487]">
+              <LayoutDashboard size={20} />
+            </div>
+          </div>
+          <p className="font-medium text-[#29352f] dark:text-[#e9ece6]">Votre espace de travail arrive…</p>
+          <p key={loadingMessageIndex} className="mt-2 min-h-6 text-sm text-[#73766f] dark:text-[#aab3a8]">
+            {adminLoadingMessages[loadingMessageIndex]}
           </p>
         </div>
       </div>
