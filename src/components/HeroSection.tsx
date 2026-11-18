@@ -1,12 +1,8 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import heroCeiling1 from "@/assets/hero-ceiling.jpg";
-import heroCeiling2 from "@/assets/hero-ceiling-2.jpg";
-import heroCeiling3 from "@/assets/hero-ceiling-3.jpg";
-import { api } from "@/lib/api";
+import { getPublicContent } from "@/lib/publicContent";
 
-const slides = [heroCeiling1, heroCeiling2, heroCeiling3];
 type ContentSlide = {
   mediaUrl: string;
   mediaType: "image" | "video";
@@ -14,6 +10,15 @@ type ContentSlide = {
   description: string;
   button_text: string;
   button_url: string;
+};
+
+const placeholderSlide: ContentSlide = {
+  mediaUrl: "",
+  mediaType: "image",
+  title: "",
+  description: "",
+  button_text: "",
+  button_url: "",
 };
 
 const mediaPreloads = new Map<string, Promise<boolean>>();
@@ -51,31 +56,23 @@ function preloadMedia(slide: ContentSlide): Promise<boolean> {
   return loading;
 }
 
-const fallbackSlide = (mediaUrl: string): ContentSlide => ({
-  mediaUrl,
-  mediaType: "image",
-  title: "",
-  description: "",
-  button_text: "",
-  button_url: "",
-});
-
 const HeroSection = () => {
   const [current, setCurrent] = useState(0);
   const [contentSlides, setContentSlides] = useState<ContentSlide[]>([]);
   const [failedMedia, setFailedMedia] = useState<Set<string>>(() => new Set());
-  const displaySlides: ContentSlide[] = contentSlides.length
-    ? contentSlides
-    : slides.map(fallbackSlide);
+  const displaySlides = useMemo<ContentSlide[]>(
+    () => contentSlides.length ? contentSlides : [placeholderSlide],
+    [contentSlides],
+  );
   const activeIndex = current % displaySlides.length;
   const activeSlide = displaySlides[activeIndex];
   const backgroundSlide = failedMedia.has(activeSlide.mediaUrl)
-    ? fallbackSlide(heroCeiling1)
+    ? placeholderSlide
     : activeSlide;
 
   useEffect(() => {
     let mounted = true;
-    api<{ slides: ContentSlide[] }>("/public/content")
+    getPublicContent<{ slides: ContentSlide[] }>()
       .then(async (content) => {
         const firstSlide = content.slides[0];
         if (firstSlide && !(await preloadMedia(firstSlide))) {
@@ -106,6 +103,7 @@ const HeroSection = () => {
 
   useEffect(() => {
     const upcoming = displaySlides[(activeIndex + 1) % displaySlides.length];
+    if (!upcoming.mediaUrl) return;
     preloadMedia(upcoming).then((ready) => {
       if (!ready) setFailedMedia((previous) => new Set(previous).add(upcoming.mediaUrl));
     });
@@ -127,7 +125,7 @@ const HeroSection = () => {
           transition={{ duration: 0.85, ease: "easeInOut" }}
           className="pointer-events-none absolute inset-0"
         >
-          {backgroundSlide.mediaType === "video" ? (
+          {backgroundSlide.mediaUrl && backgroundSlide.mediaType === "video" ? (
             <video
               src={backgroundSlide.mediaUrl}
               autoPlay
@@ -137,19 +135,15 @@ const HeroSection = () => {
               onError={() => setFailedMedia((previous) => new Set(previous).add(activeSlide.mediaUrl))}
               className="h-full w-full object-cover"
             />
-          ) : (
+          ) : backgroundSlide.mediaUrl ? (
             <img
               src={backgroundSlide.mediaUrl}
               alt=""
               aria-hidden="true"
-              onError={() => {
-                if (backgroundSlide.mediaUrl !== heroCeiling1) {
-                  setFailedMedia((previous) => new Set(previous).add(activeSlide.mediaUrl));
-                }
-              }}
+              onError={() => setFailedMedia((previous) => new Set(previous).add(activeSlide.mediaUrl))}
               className="h-full w-full object-cover"
             />
-          )}
+          ) : null}
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/55 to-transparent" />
         </motion.div>
       </AnimatePresence>
@@ -197,25 +191,25 @@ const HeroSection = () => {
         </motion.div>
       </div>
 
-      <button
+      {contentSlides.length > 1 && <button
         type="button"
         onClick={prev}
         aria-label="Diapositive précédente"
         className="absolute left-2 top-1/2 z-20 grid size-10 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-foreground/35 text-primary-foreground backdrop-blur-sm transition-colors hover:bg-foreground/60 sm:left-4 sm:size-12"
       >
         <ChevronLeft size={26} />
-      </button>
-      <button
+      </button>}
+      {contentSlides.length > 1 && <button
         type="button"
         onClick={next}
         aria-label="Diapositive suivante"
         className="absolute right-2 top-1/2 z-20 grid size-10 -translate-y-1/2 cursor-pointer place-items-center rounded-full bg-foreground/35 text-primary-foreground backdrop-blur-sm transition-colors hover:bg-foreground/60 sm:right-4 sm:size-12"
       >
         <ChevronRight size={26} />
-      </button>
+      </button>}
 
-      <div className="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 gap-3 sm:bottom-7">
-        {displaySlides.map((_, i) => (
+      {contentSlides.length > 1 && <div className="absolute bottom-5 left-1/2 z-20 flex -translate-x-1/2 gap-3 sm:bottom-7">
+        {contentSlides.map((_, i) => (
           <button
             key={i}
             type="button"
@@ -225,7 +219,7 @@ const HeroSection = () => {
             className={"h-3 rounded-full transition-all duration-300 " + (i === activeIndex ? "w-8 bg-primary" : "w-3 bg-primary-foreground/45 hover:bg-primary-foreground/75")}
           />
         ))}
-      </div>
+      </div>}
     </section>
   );
 };

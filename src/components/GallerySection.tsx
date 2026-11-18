@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { api } from "@/lib/api";
+import { getPublicContent } from "@/lib/publicContent";
 import {
   Dialog,
   DialogContent,
@@ -46,7 +46,7 @@ const GallerySection = () => {
   const reduceMotion = useReducedMotion();
 
   useEffect(() => {
-    api<{ realizations: PublicRealization[] }>("/public/content")
+    getPublicContent<{ realizations: PublicRealization[] }>()
       .then((content) => {
         const projects = content.realizations.map<GalleryProject>((item) => ({
           id: item.id,
