@@ -30,9 +30,9 @@ const Footer = () => {
             <h2 className="text-xs font-semibold uppercase tracking-[0.16em] text-white/45">Contact</h2>
             <ul className="mt-4 space-y-4 text-sm text-white/75">
               <li>
-                <a className="inline-flex min-h-10 items-center gap-3 transition-colors hover:text-white motion-reduce:transition-none" href="tel:+221707127168">
+                <a className="inline-flex min-h-10 items-center gap-3 transition-colors hover:text-white motion-reduce:transition-none" href="tel:+221769321902">
                   <Phone size={16} className="shrink-0 text-[#b8cdbb]" />
-                  +221 70 712 71 68
+                  +221 76 932 19 02
                 </a>
               </li>
               <li>
